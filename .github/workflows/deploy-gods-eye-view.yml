@@ -29,6 +29,14 @@ jobs:
       - name: Build
         working-directory: gods-eye-view
         run: npx vite build --base=/experiment/
+      - name: Fix Cesium asset path
+        # vite-plugin-cesium copies its runtime assets to dist/<base>/cesium
+        # instead of dist/cesium, which 404s once GitHub Pages serves dist/
+        # as the site root under /experiment/. Move them back in place.
+        working-directory: gods-eye-view
+        run: |
+          mv dist/experiment/cesium dist/cesium
+          rm -rf dist/experiment
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
